@@ -1,40 +1,35 @@
-
 #include <Arduino.h>
 
+#define baud 9600 
 
-void setup() {
+void setup(){
     Serial.begin(9600);
-    while (!Serial) {
-        ; // wait for serial port to connect. Needed for native USB
-    }
-    Serial.write("ja bin da\n\r");
+    while(!Serial){;}
+    Serial.printf("Config: %i, %ol", baud, Serial.getTimeout());
 }
 
-void loop() {
-    constexpr size_t bufferSize = 128;
-    static char buffer[bufferSize];
+void loop(){
+    static const size_t bufsize = 128;
     static size_t index = 0;
+    static char msg[bufsize] = {0};
 
-    while (Serial.available() > 0) {
-        char incomingByte = (char)Serial.read();
+    while(Serial.available() > 0){
+        char incomming_byte = (char)Serial.read();
 
-        // End of line -> send collected bytes (if any) and reset
-        if (incomingByte == '\n' || incomingByte == '\r') {
-            if (index > 0) {
-                Serial.write(buffer, index);
+        if(incomming_byte == '\n' || incomming_byte == '\r')
+        {
+            if(index > 0){
+                Serial.write(msg,index);
                 index = 0;
             }
-            // ignore bare newline characters otherwise
             continue;
         }
 
-        // Store byte and check for buffer full
-        buffer[index++] = incomingByte;
-        if (index >= bufferSize) {
-            Serial.write(buffer, bufferSize);
+        msg[index++] = incomming_byte;
+        if(index >= bufsize){
+            Serial.write(msg,bufsize);
+            Serial.printf("\nBuffer overflow, data truncated\n");
             index = 0;
         }
     }
-
-    // Do not automatically flush partial data here; wait for newline or buffer full
 }
