@@ -16,7 +16,7 @@ void loop(){
     while(Serial.available() > 0){
         char incomming_byte = (char)Serial.read();
 
-        if(incomming_byte == '\n' || incomming_byte == '\r')
+        if(index >= 1 && msg[index - 1] == 0xFF && msg[index] == 0xFF)
         {
             if(index > 0){
                 Serial.write(msg,index);
