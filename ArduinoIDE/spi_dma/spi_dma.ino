@@ -1,4 +1,4 @@
-/**
+/**dummy code
 *es können zwei buffer verwendet werden bei hohen datenraten
 *dma befüült buffer A, cpu bearbeitet buffer B, dma befüllt buffer B, cpu bearbeiutet A
 */
@@ -19,6 +19,7 @@ void setup() {
   dmaTransaction.tx_buffer = dummybuffer;
   initTimer(1000);
 }
+
 
 void IRAM_ATTR onTimer(){ // IRAM_ATTR sagt das es im internen ram abgelegt wird welches schneller ist
   startSPIDMATransfer();
