@@ -13,4 +13,4 @@ Danach das **Teensy Board Package** installieren.
 
 # using ESP_IDF
 
-auf dieser Webseite nachlesen [text](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/get-started/windows-setup.html)
+auf dieser Webseite nachlesen [link](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/get-started/windows-setup.html) wie man esp_idf insterliert und so
