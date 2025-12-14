@@ -10,3 +10,7 @@ In der Arduino IDE unter **Preferences → Additional Boards Manager URLs** folg
 https://www.pjrc.com/teensy/package_teensy_index.json
 
 Danach das **Teensy Board Package** installieren.
+
+# using ESP_IDF
+
+auf dieser Webseite nachlesen [text](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/get-started/windows-setup.html)
