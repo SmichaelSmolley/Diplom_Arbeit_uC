@@ -33,5 +33,5 @@ uint32_t ADS8681::spiSend(enum ads868x_spi_command command,
 
 uint16_t ADS8681::adcRead()
 {
-    return (uint16_t)(this->spiSend(ADS868X_SPI_COMMAND_NOP, 0, 0) >> 16);
+    return (uint16_t)(this->spiSend(ADS868X_SPI_COMMAND_NOP, ADS868X_REGISTER_ADDRESS_DEVICE_ID, 0) >> 16);
 }

@@ -1,12 +1,27 @@
-#include <Arduino>
+#include <Arduino.h>
+#include <SPI.h>
+#include <stdint.h>
+#include "ADS8681.h"
 #define baud 9600
+#define ADS8681_CS_PIN 2
+ADS8681 adc(ADS8681_CS_PIN);
 
 void setup() {
-  Serial.begin(unsigned long baud)
-
+  Serial.begin(baud);
+  uint32_t range_sel_reg = 0;
+  range_sel_reg |= (uint32_t)
+        ADS8681_RANGE_SEL_UP_1_25_VREF
+        & ADS8681_RANGE_SEL_MASK
+        << ADS8681_RANGE_SEL_SHIFT;
+  adc.spiSend(
+        ADS868X_SPI_COMMAND_WRITE_FULL,
+        ADS868X_REGISTER_ADDRESS_RANGE_SEL,
+        range_sel_reg);
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-
+  uint32_t ret = adc.adcRead();
+  Serial.printf("%#08x\n", ret);
+  delay(1000);
 }
