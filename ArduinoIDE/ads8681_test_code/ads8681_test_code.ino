@@ -21,7 +21,9 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  uint32_t ret = adc.adcRead();
-  Serial.printf("%#08x\n", ret);
-  delay(1000);
+  uint16_t ret = adc.adcRead();
+  Serial.printf("%#08x \t", ret);
+  Serial.printf("%d \t", ret);
+  Serial.printf("%lf \n", ((4.096*1.25)/65536)*ret);
+  delay(100);
 }
