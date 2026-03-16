@@ -14,7 +14,7 @@ bool readSerial();
 
 void setup() {
   pinMode(DAC_pin, OUTPUT);
-  analogWrite(DAC_pin, 4095/2);
+  analogWrite(DAC_pin, 255/2);
   Serial.begin(baud);
   uint32_t range_sel_reg = 0;
   range_sel_reg |= (uint32_t)
@@ -28,13 +28,28 @@ void setup() {
 }
 
 void loop() {
-  if(readSerial()){
+  for(float i = 0; i <= 2.5; i=i+0.1){
+
+      int DAC_internal = ((i + 5.0) / 10.0) * 255;
+
+      analogWrite(DAC_pin, DAC_internal);
+      uint16_t ret = adc.adcRead();
+      Serial.printf("%#08x \t", ret);
+      Serial.printf("%d \t", ret);
+      Serial.printf("%lf \t", ((4.096*1.25)/65536)*ret);
+      float volt = ((4.096*1.25)/65536)*ret;
+      Serial.printf("%lf ma\n", ((volt*0.30303)/10000)*1000);
+      delay(100);
+  }
+  /*if(readSerial()){
     uint16_t ret = adc.adcRead();
     Serial.printf("%#08x \t", ret);
     Serial.printf("%d \t", ret);
-    Serial.printf("%lf \n", ((4.096*1.25)/65536)*ret);
+    Serial.printf("%lf \t", ((4.096*1.25)/65536)*ret);
+    float volt = ((4.096*1.25)/65536)*ret;
+    Serial.printf("%lf ma\n", ((volt*0.30303)/10000)*1000);
     delay(100);
-  }
+  }*/
 }
 
 bool readSerial() {
@@ -58,7 +73,7 @@ bool readSerial() {
 
       int DAC_internal = ((DAC_external + 5.0) / 10.0) * 255;
 
-      dacWrite(DAC_pin, DAC_internal);
+      analogWrite(DAC_pin, DAC_internal);
 
       Serial.printf("DAC: %d\n", DAC_internal);
 
