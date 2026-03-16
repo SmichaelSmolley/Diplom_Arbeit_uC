@@ -4,9 +4,17 @@
 #include "ADS8681.h"
 #define baud 9600
 #define ADS8681_CS_PIN 2
+#define DAC_pin 4
 ADS8681 adc(ADS8681_CS_PIN);
 
+String inputString = "";
+bool stringComplete = false;
+
+bool readSerial();
+
 void setup() {
+  pinMode(DAC_pin, OUTPUT);
+  analogWrite(DAC_pin, 4095/2);
   Serial.begin(baud);
   uint32_t range_sel_reg = 0;
   range_sel_reg |= (uint32_t)
@@ -20,10 +28,44 @@ void setup() {
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  uint16_t ret = adc.adcRead();
-  Serial.printf("%#08x \t", ret);
-  Serial.printf("%d \t", ret);
-  Serial.printf("%lf \n", ((4.096*1.25)/65536)*ret);
-  delay(100);
+  if(readSerial()){
+    uint16_t ret = adc.adcRead();
+    Serial.printf("%#08x \t", ret);
+    Serial.printf("%d \t", ret);
+    Serial.printf("%lf \n", ((4.096*1.25)/65536)*ret);
+    delay(100);
+  }
+}
+
+bool readSerial() {
+  while (Serial.available()) {
+    char c = Serial.read();
+    if(c == '\n'){
+      stringComplete = true;
+      break;
+    }
+    inputString += c;
+  }
+  if (stringComplete) {
+    if(inputString == "start"){
+      return 1;
+    }
+    else{
+      float DAC_external = inputString.toFloat();
+
+      if (DAC_external > 5) DAC_external = 5;
+      if (DAC_external < -5) DAC_external = -5;
+
+      int DAC_internal = ((DAC_external + 5.0) / 10.0) * 255;
+
+      dacWrite(DAC_pin, DAC_internal);
+
+      Serial.printf("DAC: %d\n", DAC_internal);
+
+      stringComplete = false;
+      inputString = "";
+      return 0;
+    }
+  }
+  return 0;
 }
